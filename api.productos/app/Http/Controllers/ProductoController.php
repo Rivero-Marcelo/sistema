@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Producto;
 
-use function GuzzleHttp\Promise\all;
-
 class ProductoController extends Controller
 {
 
