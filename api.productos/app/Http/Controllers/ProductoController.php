@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Producto;
 
+use function GuzzleHttp\Promise\all;
 
 class ProductoController extends Controller
 {
@@ -40,7 +41,7 @@ class ProductoController extends Controller
     public function show(Request $request, $id){
 
         try {
-            $producto = Producto::findOrFail($id)->toJson();
+            $producto = Producto::findOrFail($id);
             return $producto;
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response([
@@ -52,9 +53,21 @@ class ProductoController extends Controller
 
     public function update(Request $request, $id){
 
-        $producto = Producto::findOrFail($id);
-        return $producto;
+        try{
 
+        $producto = Producto::findOrFail($id);
+        $producto->fill($request->all());
+        $producto->save();
+
+        return ['mensaje' => 'Se actualizaron los datos',
+                'Producto' => $producto
+            ];
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e){
+
+            return ['mensaje' => 'No se encontró el registro.'];
+
+        }
 
     }
 
@@ -65,10 +78,7 @@ class ProductoController extends Controller
 
         return [ 'mensaje' => 'Se eliminó el producto.'];
 
- 
     }
-
-
 
 
 }
